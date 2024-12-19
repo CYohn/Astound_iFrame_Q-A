@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn More About Narration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .audio-player {
+            display: inline-block;
+            background-color: #483092;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            width: 320px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .control-button {
+            background-color: #3ab54a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .control-button:hover {
+            background-color: #2d9436;
+        }
+
+        .seek-bar {
+            width: 100%;
+            appearance: none;
+            height: 8px;
+            background-color: #fff;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .seek-bar::-webkit-slider-thumb {
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background-color: #3ab54a;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .time {
+            margin-top: 10px;
+            display: block;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="audio-player">
+        <div class="controls">
+            <button class="control-button" id="rewindButton">⏪ Rewind</button>
+            <button class="control-button" id="playButton">▶ Play</button>
+            <button class="control-button" id="ffButton">⏩ FF</button>
+        </div>
+        <input type="range" class="seek-bar" id="seekBar" value="0" max="100">
+        <span class="time" id="currentTime">0:00</span>
+        <audio id="audio"
+            src="Astound_QandA_Block.mp3"></audio>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audio');
+        const playButton = document.getElementById('playButton');
+        const rewindButton = document.getElementById('rewindButton');
+        const ffButton = document.getElementById('ffButton');
+        const seekBar = document.getElementById('seekBar');
+        const currentTime = document.getElementById('currentTime');
+
+        // Toggle play and pause
+        playButton.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                playButton.textContent = '⏸ Pause';
+            } else {
+                audio.pause();
+                playButton.textContent = '▶ Play';
+            }
+        });
+
+        // Rewind audio by 10 seconds
+        rewindButton.addEventListener('click', () => {
+            audio.currentTime = Math.max(0, audio.currentTime - 10);
+        });
+
+        // Fast forward audio by 10 seconds
+        ffButton.addEventListener('click', () => {
+            audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+        });
+
+        // Update seek bar as audio plays
+        audio.addEventListener('timeupdate', () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            seekBar.value = progress;
+
+            // Update current time display
+            const minutes = Math.floor(audio.currentTime / 60);
+            const seconds = Math.floor(audio.currentTime % 60)
+                .toString()
+                .padStart(2, '0');
+            currentTime.textContent = `${minutes}:${seconds}`;
+        });
+
+        // Seek functionality
+        seekBar.addEventListener('input', () => {
+            const newTime = (seekBar.value / 100) * audio.duration;
+            audio.currentTime = newTime;
+        });
+    </script>
+
+</body>
+
+</html>
